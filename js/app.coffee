@@ -1,45 +1,56 @@
-class Input
-  initialize: ->
+class window.Display
+  constructor: (@app)->
+    @canvas = $ '#big'
+    @small = $ '#small'
+    @colour = 'black'
+    @blocks = 32
+    @scale = 10
+    @setCanvasScale()
+    @ctx = @canvas[0].getContext '2d'
+    @lctx = @small[0].getContext '2d'
     @isDown = false
-    canvas.addEventListener 'mousemove', @draw, false
-    canvas.addEventListener 'mousedown', @mouseDown, false
-    window.addEventListener 'mouseup', @mouseUp, false
-
-class Display
-  initialize: ->
-    @canvas = document.getElementById 'big'
-    @small = document.getElementById 'small'
-    @ctx = canvas.getContext '2d'
-    @lctx = small.getContext '2d'
     @blocks = 32
     @scale = 10
     @x = 0
     @y = 0
+    @addListeners()
 
-  draw: ->
+  draw: =>
     @ctx.fillStyle = @colour
-    @ctx.fillRect x, y, scale, scale
-    @lctx.fillRect x/scale, y/scale, 1, 1
+    @ctx.fillRect @x, @y, @scale, @scale
+    @lctx.fillRect @x / @scale, @y / @scale, 1, 1
+
+  addListeners: ->
+    @canvas.mousemove @app.draw
+    @canvas.mousedown @mouseDown
+    $(window).mouseup @mouseUp
 
   setCanvasScale: ->
-    canvas.width = blocks * scale
-    canvas.height = blocks * scale
-    small.width = blocks
-    small.height = blocks
+    @canvas.css 
+      width: "#{@blocks * @scale}px"
+      height: "#{@blocks * @scale}px"
+      border: '2px grey dotted'
+    @canvas[0].width = @blocks * @scale
+    @canvas[0].height = @blocks * @scale
+    @small.css 
+      width: "#{@blocks}px"
+      height: "#{@blocks}px"
+      border: '2px grey dotted'
+    @small[0].width = @blocks
+    @small[0].height = @blocks
+
+  mouseDown: => @isDown = true
+
+  mouseUp: => @isDown = false
     
-class App
-  initialize: ->
-    @display = new Display
-    @input = new Input
-    @isDown = false
-    @colour = 'black'
+class window.App
+  constructor: ->
+    @display = new Display(@)
     
-  draw:(event)->
+  draw:(event)=>
     @display.x = Math.floor(event.pageX / @display.scale) * @display.scale
     @display.y = Math.floor(event.pageY / @display.scale) * @display.scale
-    @display.draw() if input.isDown
-  
+    @display.draw() if @display.isDown
 
-};
-window.onload = ->
-    window.app = new App
+$ ->
+  window.app = new App()
