@@ -5,22 +5,19 @@
 
     function Display(app) {
       this.app = app;
-      this.mouseUp = __bind(this.mouseUp, this);
-      this.mouseDown = __bind(this.mouseDown, this);
+      this.mouseOff = __bind(this.mouseOff, this);
+      this.mouseOn = __bind(this.mouseOn, this);
+      this.setCanvasScale = __bind(this.setCanvasScale, this);
       this.draw = __bind(this.draw, this);
       this.canvas = $('#big');
       this.small = $('#small');
-      this.colour = 'black';
-      this.blocks = 32;
-      this.scale = 10;
-      this.setCanvasScale();
+      this.blocksSlider = $('#blocks');
+      this.scaleSlider = $('#scale');
+      this.colour = 'rgb(0,0,0)';
       this.ctx = this.canvas[0].getContext('2d');
       this.lctx = this.small[0].getContext('2d');
       this.isDown = false;
-      this.blocks = 32;
-      this.scale = 10;
-      this.x = 0;
-      this.y = 0;
+      this.setCanvasScale();
       this.addListeners();
     }
 
@@ -30,34 +27,43 @@
       return this.lctx.fillRect(this.x / this.scale, this.y / this.scale, 1, 1);
     };
 
+    Display.prototype.outOfBounds = function() {
+      return this.x > this.canvas.width || this.y > this.canvas.height || this.x < 0 || this.y < 0;
+    };
+
     Display.prototype.addListeners = function() {
       this.canvas.mousemove(this.app.draw);
-      this.canvas.mousedown(this.mouseDown);
-      return $(window).mouseup(this.mouseUp);
+      this.canvas.mousedown(this.mouseOn);
+      this.canvas.mouseup(this.mouseOff);
+      this.canvas.mouseout(this.mouseOff);
+      this.blocksSlider.change(this.setCanvasScale);
+      return this.scaleSlider.change(this.setCanvasScale);
     };
 
     Display.prototype.setCanvasScale = function() {
+      this.blocks = this.blocksSlider.val();
+      this.scale = this.scaleSlider.val();
       this.canvas.css({
         width: "" + (this.blocks * this.scale) + "px",
-        height: "" + (this.blocks * this.scale) + "px",
-        border: '2px grey dotted'
+        height: "" + (this.blocks * this.scale) + "px"
       });
       this.canvas[0].width = this.blocks * this.scale;
       this.canvas[0].height = this.blocks * this.scale;
+      this.ctx.fillStyle = 'white';
+      this.ctx.fillRect(0, 0, this.canvas[0].width, this.canvas[0].height);
       this.small.css({
         width: "" + this.blocks + "px",
-        height: "" + this.blocks + "px",
-        border: '2px grey dotted'
+        height: "" + this.blocks + "px"
       });
       this.small[0].width = this.blocks;
       return this.small[0].height = this.blocks;
     };
 
-    Display.prototype.mouseDown = function() {
+    Display.prototype.mouseOn = function() {
       return this.isDown = true;
     };
 
-    Display.prototype.mouseUp = function() {
+    Display.prototype.mouseOff = function() {
       return this.isDown = false;
     };
 
@@ -72,8 +78,11 @@
     }
 
     App.prototype.draw = function(event) {
-      this.display.x = Math.floor(event.pageX / this.display.scale) * this.display.scale;
-      this.display.y = Math.floor(event.pageY / this.display.scale) * this.display.scale;
+      var ex, why;
+      ex = event.clientX - event.target.offsetLeft;
+      why = event.clientY - event.target.offsetTop;
+      this.display.x = Math.floor(ex / this.display.scale) * this.display.scale;
+      this.display.y = Math.floor(why / this.display.scale) * this.display.scale;
       if (this.display.isDown) return this.display.draw();
     };
 
