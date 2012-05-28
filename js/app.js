@@ -1,48 +1,89 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  window.Display = (function() {
+  window.App = (function() {
 
-    function Display(app) {
-      this.app = app;
+    function App() {
+      this.draw = __bind(this.draw, this);
       this.mouseOff = __bind(this.mouseOff, this);
       this.mouseOn = __bind(this.mouseOn, this);
       this.setCanvasScale = __bind(this.setCanvasScale, this);
-      this.draw = __bind(this.draw, this);
-      this.canvas = $('#big');
+      this.save = __bind(this.save, this);
+      this.prepareImg = __bind(this.prepareImg, this);
+      this.start = __bind(this.start, this);
+      this.updateColours = __bind(this.updateColours, this);      this.canvas = $('#big');
       this.small = $('#small');
-      this.blocksSlider = $('#blocks');
-      this.scaleSlider = $('#scale');
       this.colour = 'rgb(0,0,0)';
       this.ctx = this.canvas[0].getContext('2d');
       this.lctx = this.small[0].getContext('2d');
       this.isDown = false;
-      this.setCanvasScale();
-      this.addListeners();
+      $('#drawPane').hide();
+      $('#startButton').click(this.start);
+      $('#saveModal').on('show', this.prepareImg);
+      $('#saveButton').click(this.save);
+      $('#blocks').change(function() {
+        return $('#blocksDisplay').html($('#blocks').val());
+      });
+      $('#scale').change(function() {
+        $('#scaleDisplay').html($('#scale').val());
+        return $('#scalePreview').css({
+          width: $('#scale').val(),
+          height: $('#scale').val()
+        });
+      });
+      $('#red').change(this.updateColours);
+      $('#green').change(this.updateColours);
+      $('#blue').change(this.updateColours);
     }
 
-    Display.prototype.draw = function() {
-      this.ctx.fillStyle = this.colour;
-      this.ctx.fillRect(this.x, this.y, this.scale, this.scale);
-      return this.lctx.fillRect(this.x / this.scale, this.y / this.scale, 1, 1);
+    App.prototype.updateColours = function() {
+      var blue, green, red;
+      red = $('#red').val();
+      green = $('#green').val();
+      blue = $('#blue').val();
+      this.colour = "rgb(" + red + ", " + green + ", " + blue + ")";
+      return $('#colourPreview').css({
+        background: this.colour
+      });
     };
 
-    Display.prototype.outOfBounds = function() {
-      return this.x > this.canvas.width || this.y > this.canvas.height || this.x < 0 || this.y < 0;
+    App.prototype.start = function() {
+      $('.hero-unit').hide();
+      $('#drawPane').show();
+      this.setName();
+      this.setCanvasScale();
+      return this.addListeners();
     };
 
-    Display.prototype.addListeners = function() {
-      this.canvas.mousemove(this.app.draw);
+    App.prototype.prepareImg = function() {
+      var src;
+      src = this.small[0].toDataURL("preview.png");
+      return $('#preview').attr('src', src);
+    };
+
+    App.prototype.save = function() {
+      var name, src;
+      name = $('#saveName').val();
+      src = this.small[0].toDataURL("" + name + ".png");
+      return window.open(src, this.blocks, this.blocks);
+    };
+
+    App.prototype.setName = function() {
+      this.title = $('#name').val();
+      $('#title').html(this.title);
+      return $('#saveName').val(this.title);
+    };
+
+    App.prototype.addListeners = function() {
+      this.canvas.mousemove(this.draw);
       this.canvas.mousedown(this.mouseOn);
       this.canvas.mouseup(this.mouseOff);
-      this.canvas.mouseout(this.mouseOff);
-      this.blocksSlider.change(this.setCanvasScale);
-      return this.scaleSlider.change(this.setCanvasScale);
+      return this.canvas.mouseout(this.mouseOff);
     };
 
-    Display.prototype.setCanvasScale = function() {
-      this.blocks = this.blocksSlider.val();
-      this.scale = this.scaleSlider.val();
+    App.prototype.setCanvasScale = function() {
+      this.blocks = $('#blocks').val();
+      this.scale = $('#scale').val();
       this.canvas.css({
         width: "" + (this.blocks * this.scale) + "px",
         height: "" + (this.blocks * this.scale) + "px"
@@ -56,34 +97,31 @@
         height: "" + this.blocks + "px"
       });
       this.small[0].width = this.blocks;
-      return this.small[0].height = this.blocks;
+      this.small[0].height = this.blocks;
+      this.lctx.fillStyle = 'white';
+      return this.lctx.fillRect(0, 0, this.blocks, this.blocks);
     };
 
-    Display.prototype.mouseOn = function() {
+    App.prototype.mouseOn = function() {
       return this.isDown = true;
     };
 
-    Display.prototype.mouseOff = function() {
+    App.prototype.mouseOff = function() {
       return this.isDown = false;
     };
 
-    return Display;
-
-  })();
-
-  window.App = (function() {
-
-    function App() {
-      this.draw = __bind(this.draw, this);      this.display = new Display(this);
-    }
-
     App.prototype.draw = function(event) {
       var ex, why;
-      ex = event.clientX - event.target.offsetLeft;
-      why = event.clientY - event.target.offsetTop;
-      this.display.x = Math.floor(ex / this.display.scale) * this.display.scale;
-      this.display.y = Math.floor(why / this.display.scale) * this.display.scale;
-      if (this.display.isDown) return this.display.draw();
+      if (this.isDown) {
+        ex = event.clientX - event.target.offsetLeft;
+        why = event.clientY - event.target.offsetTop;
+        this.x = Math.floor(ex / this.scale) * this.scale;
+        this.y = Math.floor(why / this.scale) * this.scale;
+        this.ctx.fillStyle = this.colour;
+        this.ctx.fillRect(this.x, this.y, this.scale, this.scale);
+        this.lctx.fillStyle = this.colour;
+        return this.lctx.fillRect(this.x / this.scale, this.y / this.scale, 1, 1);
+      }
     };
 
     return App;

@@ -2,67 +2,100 @@
 <html>
   <head>
     <title>App in a Box: twitter/github comparison</title>
-    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes" >
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/bootstrap-responsive.css">
+    <link rel="stylesheet" href="css/colorpicker.css">
     <link rel="stylesheet" href="css/style.css">
 
   </head>
   <body>
-    <div class="modal" id="myModal">
+    <div class="modal hide fade" id="startModal">
       <div class="modal-header">
-        <button class="close" data-dismiss="modal">×</button>
+        <button class="close" data-dismiss="modal">x</button>
         <h3>Make a New Drawing</h3>
       </div>
       <div class="modal-body">
-        <p>What arey ou going to call your drawing?</p>
+        <p>What are you going to call your drawing?</p>
         <input type='text' id='name'>
 
         <p>To make a new drawing let us know how many blocks along each side...</p>
-        <label for='blocks'>Blocks</label>
-        <input type="range" id="blocks" min="4" max="32" />
+        <label for='blocks'>Blocks : <span id='blocksDisplay'>10</span></label>
+        <input type="range" id="blocks" value='10' min="4" max="32" >
 
         <p>And the scale you will be working to</p>
-        <label for='scale'>Scale</label>
-        <input type="range" id="scale" min="10" max="40" />
+        <label for='scale'>Scale : <span id='scaleDisplay'>20</span></label>
+        <input type="range" id="scale" value='20' min="10" max="40" >
+        <div id='scalePreview'></div>
       </div>
       <div class="modal-footer">
-        <a href="#" class="btn">Close</a>
-        <a href="#" class="btn btn-primary">Save changes</a>
+        <a href="#" class="btn" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-success" id='startButton' data-dismiss="modal">Start</a>
       </div>
     </div>
+
+    <div class="modal hide fade" id="saveModal">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">x</button>
+        <h3>Save your Drawing</h3>
+      </div>
+      <div class="modal-body">
+        <p>Preview</p>
+        <img id='preview'>
+        <p>Save as</p>
+        <input type='text' id='saveName'>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-success" id='saveButton' data-dismiss="modal">Save</a>
+      </div>
+    </div>
+    
     <div class="navbar">
       <div class="navbar-inner">
         <div class="container">
           <a class="brand" href="./index.html">pixelMate</a>
-          <a class="btn btn-primary btn-large" id='start'>
-            Start a new drawing
-          </a>
-          <a class="btn btn-primary btn-large" id='save'>
-            Save your drawing
-          </a>
         </div>
       </div>
     </div>
+    
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span12">
+        <div class='span4'>
+          <div class= 'well'>
+            <h2>Colour Picker</h2>
+            <label for='red'>red</label><input type="range" id="red" value='0' min="0" max="255" >
+
+            <label for='green'>green</label><input type="range" id="green" value='0' min="0" max="255" >
+
+            <label for='blue'>blue</label><input type="range" id="blue" value='0' min="0" max="255" >
+
+            <p id='colourPreview' >Colour Preview</p>
+          </div>
+            <a class="btn btn-primary btn-large" id='save' data-toggle="modal" href="#saveModal">
+              Save Drawing
+            </a>
+        </div>
+        <div class="span8">
           <div class="hero-unit">
             <h1>pixelMate</h1>
-            <p>make your pixel art online with ease.</p>
+            <p>Make your pixel art online with ease.</p>
+            <a class="btn right btn-primary btn-large" id='start' data-toggle="modal" href="#startModal">
+              Start a new drawing
+            </a>
           </div>
-          <div>
+          <div class="span4" id='drawPane'>
+            <h2 id='title'></h2>
             <canvas id='big'></canvas>
             <canvas id='small'></canvas>
           </div>
-          <!--Body content-->
         </div>
       </div>
     </div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script src="js/lib/jquery.js"></script>
+    <script src="js/lib/colorpicker.js"></script>
     <script src="js/lib/bootstrap.js"></script>
     <script src="js/app.js"></script>
-    <script src="http://platform.twitter.com/anywhere.js?id=YOUR_API_KEY&v=1" type="text/javascript"></script>
   </body>
 </html>
