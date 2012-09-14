@@ -32,3 +32,19 @@
   display:inline-block;
   background:#000;
 }
+#big{
+  cursor:crosshair;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+
+  /* No support for these yet, use at own risk */
+  -o-user-select: none;
+  user-select: none;
+}
+#redCount,
+#greenCount,
+#blueCount{
+  width: 24px;
+  margin-left: 10px;
+}

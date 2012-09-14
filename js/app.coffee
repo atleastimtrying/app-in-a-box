@@ -16,14 +16,28 @@ class window.App
       $('#scalePreview'). css 
         width: $('#scale').val()
         height: $('#scale').val()
-    $('#red').change @updateColours 
+    $('#red').change @updateColours
     $('#green').change @updateColours
     $('#blue').change @updateColours
+    $('#redCount').keyup @updateColours
+    $('#greenCount').keyup @updateColours
+    $('#blueCount').keyup @updateColours
   
-  updateColours: =>
-    red = $('#red').val()
-    green = $('#green').val()
-    blue = $('#blue').val()
+  updateColours: (event)=>
+    if $(event.currentTarget).attr('type') is 'text'
+      red = $('#redCount').val()
+      green = $('#greenCount').val()
+      blue = $('#blueCount').val()
+      $('#red').val red
+      $('#green').val green
+      $('#blue').val blue
+    else
+      red = $('#red').val()
+      green = $('#green').val()
+      blue = $('#blue').val()
+      $('#redCount').val red
+      $('#greenCount').val green
+      $('#blueCount').val blue
     @colour = "rgb(#{red}, #{green}, #{blue})"
     $('#colourPreview').css background: @colour
   
@@ -32,11 +46,12 @@ class window.App
     $('#drawPane').show()
     @setName()
     @setCanvasScale()
+    @setSmallScale()
     @addListeners()
   
   prepareImg: =>
     src = @small[0].toDataURL "preview.png"
-    $('#preview').attr('src', src)
+    $('#preview').attr 'src', src
 
   save: =>
     name = $('#saveName').val()
@@ -64,7 +79,8 @@ class window.App
     @canvas[0].height = @blocks * @scale
     @ctx.fillStyle = 'white'
     @ctx.fillRect 0, 0, @canvas[0].width, @canvas[0].height
-    
+  
+  setSmallScale: =>
     @small.css 
       width: "#{@blocks}px"
       height: "#{@blocks}px"
@@ -73,7 +89,9 @@ class window.App
     @lctx.fillStyle = 'white'
     @lctx.fillRect 0, 0, @blocks, @blocks 
 
-  mouseOn: => @isDown = true
+  mouseOn: (event)=> 
+    @isDown = true
+    @draw event
 
   mouseOff: => @isDown = false
 

@@ -1,14 +1,13 @@
 <!doctype html>  
 <html>
   <head>
-    <title>App in a Box: twitter/github comparison</title>
+    <title>App in a Box: pixelMate</title>
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes" >
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/bootstrap-responsive.css">
     <link rel="stylesheet" href="css/colorpicker.css">
     <link rel="stylesheet" href="css/style.css">
-
   </head>
   <body>
     <div class="modal hide fade" id="startModal">
@@ -22,11 +21,11 @@
 
         <p>To make a new drawing let us know how many blocks along each side...</p>
         <label for='blocks'>Blocks : <span id='blocksDisplay'>10</span></label>
-        <input type="range" id="blocks" value='10' min="4" max="32" >
+        <input type="range" id="blocks" value='10' min="4" max="20" >
 
         <p>And the scale you will be working to</p>
         <label for='scale'>Scale : <span id='scaleDisplay'>20</span></label>
-        <input type="range" id="scale" value='20' min="10" max="40" >
+        <input type="range" id="scale" value='20' min="10" max="30" >
         <div id='scalePreview'></div>
       </div>
       <div class="modal-footer">
@@ -68,11 +67,11 @@
         <div class='span4'>
           <div class= 'well'>
             <h2>Colour Picker</h2>
-            <label for='red'>red</label><input type="range" id="red" value='0' min="0" max="255" >
+            <label for='red'>red</label><input type="range" id="red" value='0' min="0" max="255" ><input id='redCount' type="text" value="0">
 
-            <label for='green'>green</label><input type="range" id="green" value='0' min="0" max="255" >
+            <label for='green'>green</label><input type="range" id="green" value='0' min="0" max="255" ><input id='greenCount'  type="text" value="0">
 
-            <label for='blue'>blue</label><input type="range" id="blue" value='0' min="0" max="255" >
+            <label for='blue'>blue</label><input type="range" id="blue" value='0' min="0" max="255" ><input id='blueCount'  type="text" value="0">
 
             <p id='colourPreview' >Colour Preview</p>
           </div>
